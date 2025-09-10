@@ -47,27 +47,27 @@ log "Kubernetes Version: $K8S_VERSION"
 
 # 1. Install Kubernetes Prerequisites
 log "Installing Kubernetes prerequisites..."
-"$BASE_DIR/k8s-prerequisites/install.sh" "$BASE_DIR"
+bash "$BASE_DIR/k8s-prerequisites/install.sh" "$BASE_DIR"
 
 # 3. Install and Configure HAProxy
 log "Installing and configuring HAProxy..."
-"$BASE_DIR/ha-proxy/install.sh" "$K8S_API_ENDPOINT" "$BASE_DIR"
+bash "$BASE_DIR/ha-proxy/install.sh" "$K8S_API_ENDPOINT" "$BASE_DIR"
 
 # 4. Setup Kubernetes Cluster
 log "Setting up Kubernetes cluster..."
-"$BASE_DIR/k8s-setup/install.sh" "$K8S_VERSION" "$BASE_DIR"
+bash "$BASE_DIR/k8s-setup/install.sh" "$K8S_VERSION" "$BASE_DIR"
 
 # 5. Deploy MinIO
 log "Deploying MinIO..."
-"$BASE_DIR/minio/deploy.sh" "$BASE_DIR"
+bash "$BASE_DIR/minio/deploy.sh" "$BASE_DIR"
 
 # 6. Deploy SDV Applications
 log "Deploying SDV applications..."
-"$BASE_DIR/sdv/deploy.sh" "$BASE_DIR"
+bash "$BASE_DIR/sdv/deploy.sh" "$BASE_DIR"
 
 # 7. Deploy Monitoring Stack
 log "Deploying monitoring stack..."
-"$BASE_DIR/monitoring/deploy.sh" "$BASE_DIR"
+bash "$BASE_DIR/monitoring/deploy.sh" "$BASE_DIR"
 
 log "sdv-stack installation completed successfully."
 
