@@ -9,7 +9,8 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-LOG_FILE="/Users/pranavdharashive/sdv-bash/sdv-stack/logs/install.log"
+BASE_DIR="$1"
+LOG_FILE="$BASE_DIR/logs/install.log"
 
 log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
@@ -34,18 +35,18 @@ EOF
 
 # Deploy MySQL
 log "Deploying MySQL..."
-./sdv/mysql/deploy.sh
+"$BASE_DIR/sdv/mysql/deploy.sh" "$BASE_DIR"
 
 # Deploy Redis
 log "Deploying Redis..."
-./sdv/redis/deploy.sh
+"$BASE_DIR/sdv/redis/deploy.sh" "$BASE_DIR"
 
 # Deploy sdv-middleware
 log "Deploying sdv-middleware..."
-./sdv/sdv-middleware/deploy.sh
+"$BASE_DIR/sdv/sdv-middleware/deploy.sh" "$BASE_DIR"
 
 # Deploy sdv-web
 log "Deploying sdv-web..."
-./sdv/sdv-web/deploy.sh
+"$BASE_DIR/sdv/sdv-web/deploy.sh" "$BASE_DIR"
 
 log "SDV applications deployment completed."

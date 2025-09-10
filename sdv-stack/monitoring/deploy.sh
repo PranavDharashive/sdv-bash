@@ -9,7 +9,8 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-LOG_FILE="/Users/pranavdharashive/sdv-bash/sdv-stack/logs/install.log"
+BASE_DIR="$1"
+LOG_FILE="$BASE_DIR/logs/install.log"
 
 log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
@@ -141,10 +142,6 @@ data:
           - source_labels: [__meta_kubernetes_service_label_component]
             regex: apiserver
             action: keep
-      - job_name: 'kubernetes-cadvisor'
-        kubernetes_sd_configs:
-          - role: pod
-        relabel_configs:
           - source_labels: [__meta_kubernetes_pod_annotation_kubernetes_io_config]
             regex: '.*'
             action: drop

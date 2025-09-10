@@ -10,7 +10,8 @@
 set -e
 
 K8S_VERSION="$1"
-LOG_FILE="/Users/pranavdharashive/sdv-bash/sdv-stack/logs/install.log"
+BASE_DIR="$2"
+LOG_FILE="$BASE_DIR/logs/install.log"
 
 log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
