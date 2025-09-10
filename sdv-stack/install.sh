@@ -55,7 +55,7 @@ bash "$BASE_DIR/ha-proxy/install.sh" "$K8S_API_ENDPOINT" "$BASE_DIR"
 
 # 4. Setup Kubernetes Cluster
 log "Setting up Kubernetes cluster..."
-bash "$BASE_DIR/k8s-setup/install.sh" "$K8S_VERSION" "$BASE_DIR"
+bash "$BASE_DIR/k8s-setup/install.sh" "$K8S_VERSION" "$BASE_DIR" "$K8S_API_ENDPOINT"
 
 # 5. Deploy MinIO
 log "Deploying MinIO..."

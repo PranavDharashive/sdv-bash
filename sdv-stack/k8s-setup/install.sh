@@ -11,6 +11,7 @@ set -e
 
 K8S_VERSION="$1"
 BASE_DIR="$2"
+K8S_API_ENDPOINT="$3"
 LOG_FILE="$BASE_DIR/logs/install.log"
 
 log() {
@@ -36,7 +37,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 # Initialize Kubernetes cluster
 log "Initializing Kubernetes cluster..."
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version v$K8S_VERSION
+sudo kubeadm init --apiserver-advertise-address=$K8S_API_ENDPOINT --pod-network-cidr=10.244.0.0/16
 
 # Configure kubeconfig for current user
 log "Configuring kubeconfig for current user..."
