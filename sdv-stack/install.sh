@@ -30,6 +30,9 @@ log() {
 # ## Main Script
 # #############################################################################
 
+# Ensure logs directory exists
+mkdir -p "$BASE_DIR/logs"
+
 # Create log file
 touch "$LOG_FILE"
 
