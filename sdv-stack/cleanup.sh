@@ -13,7 +13,8 @@ set -e
 # ## Global Variables
 # #############################################################################
 
-LOG_FILE="/Users/pranavdharashive/sdv-bash/sdv-stack/logs/cleanup.log"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOG_FILE="$BASE_DIR/logs/cleanup.log"
 
 # #############################################################################
 # ## Functions
