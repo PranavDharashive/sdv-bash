@@ -57,32 +57,46 @@ defaults
     errorfile 503 /etc/haproxy/errors/503.http
     errorfile 504 /etc/haproxy/errors/504.http
 
-frontend kubernetes_api
-    bind *:6443
-    mode tcp
-    option tcplog
-    default_backend kubernetes_nodes
+#frontend kubernetes_api
+#    bind *:6443
+#    mode tcp
+#    option tcplog
+#    default_backend kubernetes_nodes
 
-backend kubernetes_nodes
-    mode tcp
-    option tcp-check
-    balance roundrobin
-    server master1 $K8S_API_ENDPOINT:6443 check
+#backend kubernetes_nodes
+#    mode tcp
+#    option tcp-check
+#    balance roundrobin
+#    server master1 $K8S_API_ENDPOINT:6443 check
 
-frontend web_app_http
+frontend http_front
     bind *:80
     mode http
-    default_backend web_app_backend
+    redirect scheme https code 301
 
-frontend web_app_https
-    bind *:443
+frontend https_front
+    bind *:443 ssl crt /etc/ssl/certs/haproxy.pem
     mode http
+    acl is_minio path_beg /minio
+    acl is_grafana path_beg /grafana
+    use_backend minio_backend if is_minio
+    use_backend grafana_backend if is_grafana
     default_backend web_app_backend
 
 backend web_app_backend
     mode http
     balance roundrobin
     server webapp_node 127.0.0.1:30080 check
+
+backend minio_backend
+    mode http
+    balance roundrobin
+    server minio_node 127.0.0.1:30090 check
+
+backend grafana_backend
+    mode http
+    balance roundrobin
+    server grafana_node 127.0.0.1:30007 check
 EOF
 
 # Restart HAProxy to apply changes

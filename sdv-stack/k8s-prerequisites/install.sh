@@ -84,4 +84,9 @@ EOF
 sudo systemctl restart docker
 sudo systemctl enable docker
 
+# Generate self-signed SSL certificate for HAProxy
+log "Generating self-signed SSL certificate for HAProxy..."
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/certs/haproxy.pem -out /etc/ssl/certs/haproxy.pem -subj "/CN=localhost"
+sudo chmod 600 /etc/ssl/certs/haproxy.pem
+
 log "Kubernetes prerequisites installation completed."
