@@ -75,7 +75,7 @@ frontend http_front
     redirect scheme https code 301
 
 frontend https_front
-    bind *:443 ssl crt /etc/ssl/certs/haproxy.pem
+    bind *:443 ssl crt /etc/ssl/certs/haproxy.pem no-sslv3 no-tlsv10
     mode http
     acl is_minio path_beg /minio
     acl is_grafana path_beg /grafana
@@ -91,11 +91,15 @@ backend web_app_backend
 backend minio_backend
     mode http
     balance roundrobin
+    http-request set-path %[path,regsub(^/minio,/,1)]
+    http-response replace-header Location ^/(.*) /minio/\1
     server minio_node 127.0.0.1:30090 check
 
 backend grafana_backend
     mode http
     balance roundrobin
+    http-request set-path %[path,regsub(^/grafana,/,1)]
+    http-response replace-header Location ^/(.*) /grafana/\1
     server grafana_node 127.0.0.1:30007 check
 EOF
 

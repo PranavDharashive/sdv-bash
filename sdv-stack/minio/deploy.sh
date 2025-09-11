@@ -82,7 +82,7 @@ spec:
     spec:
       containers:
         - name: minio
-          image: minio/minio:latest
+          image: quay.io/minio/minio:RELEASE.2024-10-13T13-34-11Z
           args: ["server", "/data"]
           env:
             - name: MINIO_ROOT_USER
