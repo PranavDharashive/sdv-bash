@@ -91,14 +91,16 @@ backend web_app_backend
 backend minio_backend
     mode http
     balance roundrobin
-    http-request set-path %[path,regsub(^/minio(/)?(.*)$,/\2)]
+    http-request replace-path ^/minio$ /
+    http-request replace-path ^/minio/(.*) /\1
     http-response replace-header Location ^/(.*) /minio/\1
     server minio_node 127.0.0.1:30090 check
 
 backend grafana_backend
     mode http
     balance roundrobin
-    http-request set-path %[path,regsub(^/grafana(/)?(.*)$,/\2)]
+    http-request replace-path ^/grafana$ /
+    http-request replace-path ^/grafana/(.*) /\1
     http-response replace-header Location ^/(.*) /grafana/\1
     server grafana_node 127.0.0.1:30007 check
 EOF
