@@ -205,11 +205,7 @@ spec:
           image: grafana/grafana:latest
           ports:
             - containerPort: 3000
-          env:
-            - name: GF_SERVER_ROOT_URL
-              value: https://$K8S_API_ENDPOINT/grafana
-            - name: GF_SERVER_SERVE_FROM_SUB_PATH
-              value: "true"
+          
           volumeMounts:
             - name: grafana-storage-volume
               mountPath: /var/lib/grafana
