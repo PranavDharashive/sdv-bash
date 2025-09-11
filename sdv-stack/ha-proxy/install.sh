@@ -91,17 +91,24 @@ backend web_app_backend
 backend minio_backend
     mode http
     balance roundrobin
-    http-request set-path %[path,regsub(^/minio,/,1)]
+    http-request set-path %[path,regsub(^/minio(/)?(.*)$,/\2)]
     http-response replace-header Location ^/(.*) /minio/\1
     server minio_node 127.0.0.1:30090 check
 
 backend grafana_backend
     mode http
     balance roundrobin
-    http-request set-path %[path,regsub(^/grafana,/,1)]
+    http-request set-path %[path,regsub(^/grafana(/)?(.*)$,/\2)]
     http-response replace-header Location ^/(.*) /grafana/\1
     server grafana_node 127.0.0.1:30007 check
 EOF
+
+# Validate HAProxy configuration
+log "Validating HAProxy configuration..."
+if ! sudo haproxy -c -f /etc/haproxy/haproxy.cfg; then
+    log "HAProxy configuration is invalid. Please check the output above."
+    exit 1
+fi
 
 # Restart HAProxy to apply changes
 log "Restarting HAProxy service..."
