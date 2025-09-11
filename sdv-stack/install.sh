@@ -67,7 +67,9 @@ bash "$BASE_DIR/sdv/deploy.sh" "$BASE_DIR"
 
 # 7. Deploy Monitoring Stack
 log "Deploying monitoring stack..."
-bash "$BASE_DIR/monitoring/deploy.sh" "$BASE_DIR"
+bash "$BASE_DIR/monitoring/deploy.sh" "$BASE_DIR" "$K8S_API_ENDPOINT"
+
+alias k=kubectl
 
 log "sdv-stack installation completed successfully."
 

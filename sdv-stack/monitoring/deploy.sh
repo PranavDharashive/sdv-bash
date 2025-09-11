@@ -10,6 +10,7 @@
 set -e
 
 BASE_DIR="$1"
+K8S_API_ENDPOINT="$2"
 LOG_FILE="$BASE_DIR/logs/install.log"
 
 log() {
@@ -204,6 +205,11 @@ spec:
           image: grafana/grafana:latest
           ports:
             - containerPort: 3000
+          env:
+            - name: GF_SERVER_ROOT_URL
+              value: https://$K8S_API_ENDPOINT/grafana
+            - name: GF_SERVER_SERVE_FROM_SUB_PATH
+              value: "true"
           volumeMounts:
             - name: grafana-storage-volume
               mountPath: /var/lib/grafana
@@ -225,7 +231,7 @@ spec:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-      nodePort: 30000 # Example NodePort
+      nodePort: 30007
 EOF
 
 # Wait for Prometheus and Grafana pods to be ready
