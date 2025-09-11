@@ -26,6 +26,9 @@ log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
 }
 
+# Set alias for kubectl for use within this script
+alias k=kubectl
+
 # #############################################################################
 # ## Main Script
 # #############################################################################
@@ -69,7 +72,16 @@ bash "$BASE_DIR/sdv/deploy.sh" "$BASE_DIR"
 log "Deploying monitoring stack..."
 bash "$BASE_DIR/monitoring/deploy.sh" "$BASE_DIR" "$K8S_API_ENDPOINT"
 
-alias k=kubectl
+# Set alias for kubectl permanently
+log "Setting 'k=kubectl' alias in ~/.bashrc..."
+if ! grep -q "alias k=kubectl" ~/.bashrc; then
+    echo "" >> ~/.bashrc
+    echo "# Alias for kubectl" >> ~/.bashrc
+    echo "alias k=kubectl" >> ~/.bashrc
+    log "Alias 'k=kubectl' added to ~/.bashrc. Please run 'source ~/.bashrc' or open a new terminal to use it."
+else
+    log "Alias 'k=kubectl' already exists in ~/.bashrc."
+fi
 
 log "sdv-stack installation completed successfully."
 

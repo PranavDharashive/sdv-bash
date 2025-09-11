@@ -83,7 +83,11 @@ spec:
       containers:
         - name: minio
           image: quay.io/minio/minio:RELEASE.2024-10-13T13-34-11Z
-          args: ["server", "/data"]
+          command:
+          - /bin/bash
+          - -c
+          args: 
+          - minio server /data --console-address :9090
           env:
             - name: MINIO_ROOT_USER
               value: "minioadmin"

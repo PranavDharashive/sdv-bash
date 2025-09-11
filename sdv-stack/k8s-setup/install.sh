@@ -26,7 +26,12 @@ sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl
 
 # Add Kubernetes GPG key
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v$K8S_VERSION/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+if [ -f /etc/apt/keyrings/kubernetes-apt-keyring.gpg ]; then
+    log "Kubernetes apt keyring already exists. Skipping download."
+else
+    log "Adding Kubernetes GPG key..."
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v$K8S_VERSION/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+fi
 
 # Add Kubernetes apt repository
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v$K8S_VERSION/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
