@@ -37,27 +37,42 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 # Initialize Kubernetes cluster
 log "Initializing Kubernetes cluster..."
-sudo kubeadm init --apiserver-advertise-address=$K8S_API_ENDPOINT --pod-network-cidr=10.244.0.0/16
+if [ -f /etc/kubernetes/admin.conf ]; then
+    log "Kubernetes cluster already initialized. Skipping kubeadm init."
+else
+    sudo kubeadm init --apiserver-advertise-address=$K8S_API_ENDPOINT --pod-network-cidr=10.244.0.0/16
+fi
 
 # Configure kubeconfig for current user
 log "Configuring kubeconfig for current user..."
-mkdir -p "$HOME"/.kube
-sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
-sudo chown "$(id -un)":"$(id -gn)" "$HOME"/.kube/config
+if [ -f "$HOME"/.kube/config ]; then
+    log "Kubeconfig for current user already exists. Skipping configuration."
+else
+    mkdir -p "$HOME"/.kube
+    sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
+    sudo chown "$(id -un)":"$(id -gn)" "$HOME"/.kube/config
+fi
 
 # Configure kubeconfig for root user
 log "Configuring kubeconfig for root user..."
-sudo mkdir -p /root/.kube
-sudo cp -i /etc/kubernetes/admin.conf /root/.kube/config
-sudo chown root:root /root/.kube/config
+if [ -f /root/.kube/config ]; then
+    log "Kubeconfig for root user already exists. Skipping configuration."
+else
+    sudo mkdir -p /root/.kube
+    sudo cp -i /etc/kubernetes/admin.conf /root/.kube/config
+    sudo chown root:root /root/.kube/config
+fi
 
 # Install Calico CNI
 log "Installing Calico CNI..."
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
-
-# Wait for Calico pods to be ready
-log "Waiting for Calico pods to be ready..."
-kubectl wait --for=condition=ready pod -l k8s-app=calico-node -n kube-system --timeout=300s
+if kubectl get daemonset calico-node -n kube-system &> /dev/null; then
+    log "Calico CNI is already installed. Skipping Calico installation."
+else
+    kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
+    # Wait for Calico pods to be ready
+    log "Waiting for Calico pods to be ready..."
+    kubectl wait --for=condition=ready pod -l k8s-app=calico-node -n kube-system --timeout=300s
+fi
 
 # Remove control-plane taint
 log "Removing control-plane taint..."

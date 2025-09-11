@@ -122,9 +122,9 @@ kubectl wait --for=condition=ready pod -l app=mysql -n sdv --timeout=300s
 # Verify MySQL setup and create user/database
 log "Verifying MySQL setup and creating user/database..."
 MYSQL_POD_NAME=$(kubectl get pods -n sdv -l app=mysql -o jsonpath='{.items[0].metadata.name}')
-kubectl exec -n sdv "$MYSQL_POD_NAME" -- mysql -u root -prootpassword -e "CREATE DATABASE IF NOT EXISTS sdv_data;"
-kubectl exec -n sdv "$MYSQL_POD_NAME" -- mysql -u root -prootpassword -e "CREATE USER IF NOT EXISTS 'sdvuser'@'%' IDENTIFIED BY 'abcd1234';"
-kubectl exec -n sdv "$MYSQL_POD_NAME" -- mysql -u root -prootpassword -e "GRANT ALL PRIVILEGES ON sdv_data.* TO 'sdvuser'@'%';"
-kubectl exec -n sdv "$MYSQL_POD_NAME" -- mysql -u root -prootpassword -e "FLUSH PRIVILEGES;"
+kubectl exec -n sdv "$MYSQL_POD_NAME" -- mysql -h mysql-service -P 3306 -u root -prootpassword -e "CREATE DATABASE IF NOT EXISTS sdv_data;"
+kubectl exec -n sdv "$MYSQL_POD_NAME" -- mysql -h mysql-service -P 3306 -u root -prootpassword -e "CREATE USER IF NOT EXISTS 'sdvuser'@'%' IDENTIFIED BY 'abcd1234';"
+kubectl exec -n sdv "$MYSQL_POD_NAME" -- mysql -h mysql-service -P 3306 -u root -prootpassword -e "GRANT ALL PRIVILEGES ON sdv_data.* TO 'sdvuser'@'%';"
+kubectl exec -n sdv "$MYSQL_POD_NAME" -- mysql -h mysql-service -P 3306 -u root -prootpassword -e "FLUSH PRIVILEGES;"
 
 log "MySQL deployment completed."
