@@ -76,6 +76,10 @@ fi
 
 # Remove control-plane taint
 log "Removing control-plane taint..."
-kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+if kubectl get nodes -o jsonpath='{.items[*].spec.taints[*].key}' | grep -q "node-role.kubernetes.io/control-plane"; then
+    kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+else
+    log "Control-plane taint not found. Skipping taint removal."
+fi
 
 log "Kubernetes cluster setup completed."
